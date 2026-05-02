@@ -5,13 +5,14 @@
 **Course:** Analysis of Algorithms  
 **Algorithm:** Boyer-Moore Majority Vote  
 **Tech Stack:** HTML5 · CSS3 · Vanilla JavaScript (no frameworks)  
-**Live Demo:** *(deploy to GitHub Pages and paste link here)*
+**Live Demo:** https://habibullahnaz.github.io/vote-surge/
 
 ---
 
 ## 📸 Screenshot
 
-*(Add a screenshot here after running the game)*
+<img width="1919" height="876" alt="image" src="https://github.com/user-attachments/assets/48c54c7f-c066-4123-bc22-a9a262134f93" />
+
 
 ---
 
@@ -143,9 +144,9 @@ python3 -m http.server 8000
 
 ## 👤 Author
 
-**[Your Name]**  
+**Habibullah Naz**  
 Student, Analysis of Algorithms  
-[Your University]
+Riphah International University
 
 ---
 
