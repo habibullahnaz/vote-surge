@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vote Surge — Boyer-Moore Majority Vote Game</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     MENU SCREEN
+════════════════════════════════════ -->
+<div id="screen-menu" class="screen">
+  <div class="menu-bg">
+    <div class="grid-lines"></div>
+  </div>
+  <div class="menu-content">
+    <div class="logo-area">
+      <div class="logo-tag">Analysis of Algorithms</div>
+      <h1 class="logo-title">VOTE<br/>SURGE</h1>
+      <div class="logo-sub">Boyer-Moore Majority Vote</div>
+    </div>
+
+    <div class="menu-card">
+      <h2>How to Play</h2>
+      <ol>
+        <li>Watch voters stream in one by one 🗳️</li>
+        <li>The algorithm tracks a <strong>candidate</strong> and a <strong>count</strong> in real time</li>
+        <li>Predict which party will be the <strong>majority</strong> (&gt;50%)</li>
+        <li>Lock in early for a <strong>speed bonus</strong>!</li>
+        <li>3 wrong guesses and the election is over</li>
+      </ol>
+    </div>
+
+    <button id="start-btn" class="btn-primary">Start Election ▶</button>
+
+    <div class="algo-note">
+      <strong>Boyer-Moore:</strong> O(n) time · O(1) space · Single pass
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PLAYING SCREEN
+════════════════════════════════════ -->
+<div id="screen-playing" class="screen">
+
+  <!-- HUD -->
+  <div class="hud">
+    <div class="hud-left">
+      <span id="hud-level" class="hud-level">Level 1</span>
+      <span id="hud-label" class="hud-label">District Election</span>
+    </div>
+    <div class="hud-center">
+      <span id="hud-lives" class="hud-lives"></span>
+    </div>
+    <div class="hud-right">
+      <span class="hud-score-label">SCORE</span>
+      <span id="hud-score" class="hud-score-val">0</span>
+    </div>
+  </div>
+
+  <div class="playing-layout">
+
+    <!-- Left: Vote Stream + Tally -->
+    <div class="col-left">
+      <div class="panel">
+        <div class="panel-title">Voter Stream</div>
+        <div id="vote-stream" class="vote-stream"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Live Tally</div>
+        <div id="tally-bars" class="tally-bars"></div>
+      </div>
+    </div>
+
+    <!-- Center: Algorithm Panel -->
+    <div class="col-center">
+      <div id="algo-panel" class="panel algo-panel">
+        <div class="panel-title">Boyer-Moore Algorithm</div>
+        <div class="algo-row">
+          <div class="algo-item">
+            <div class="algo-item-label">Current Candidate</div>
+            <div id="algo-candidate" class="algo-candidate-val">—</div>
+          </div>
+          <div class="algo-divider"></div>
+          <div class="algo-item">
+            <div class="algo-item-label">Vote Count</div>
+            <div id="algo-count" class="algo-count-val">0</div>
+          </div>
+        </div>
+        <div id="algo-action" class="algo-action">Waiting for first vote...</div>
+
+        <div class="algo-legend">
+          <span class="legend-item new">🆕 New candidate</span>
+          <span class="legend-item reinforce">💪 Reinforce</span>
+          <span class="legend-item cancel">⚡ Cancel</span>
+        </div>
+
+        <div class="algo-pseudocode">
+          <div class="pseudo-line"><span class="kw">if</span> count == 0 → adopt voter as candidate</div>
+          <div class="pseudo-line"><span class="kw">elif</span> voter == candidate → count++</div>
+          <div class="pseudo-line"><span class="kw">else</span> → count--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Prediction -->
+    <div class="col-right">
+      <div class="panel" id="prediction-area">
+        <div class="panel-title">Your Prediction</div>
+        <p class="prediction-hint">Who will be the majority?</p>
+        <div id="party-buttons" class="party-buttons"></div>
+        <button id="lock-btn" class="btn-lock" disabled>Lock In Prediction</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     RESULT SCREEN
+════════════════════════════════════ -->
+<div id="screen-result" class="screen">
+  <div class="result-content">
+    <div id="result-icon" class="result-icon">🗳️</div>
+    <h2 id="result-title" class="result-title">Correct!</h2>
+    <div id="result-majority" class="result-majority"></div>
+    <div id="result-player" class="result-player"></div>
+    <div class="result-algo-box">
+      <div class="result-algo-label">Algorithm Trace</div>
+      <div id="result-algo" class="result-algo-text"></div>
+    </div>
+    <button id="next-btn" class="btn-primary">Next Level →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     GAME OVER SCREEN
+════════════════════════════════════ -->
+<div id="screen-gameover" class="screen">
+  <div class="center-content">
+    <div class="go-icon">🗳️</div>
+    <h2 class="go-title">Election Lost</h2>
+    <p class="go-sub">The algorithm tried its best, but the votes were too uncertain.</p>
+    <div class="go-score">Final Score: <span id="go-score-val">0</span></div>
+    <button id="restart-btn" class="btn-primary">Run Again ▶</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     WIN SCREEN
+════════════════════════════════════ -->
+<div id="screen-win" class="screen">
+  <div class="center-content">
+    <div class="win-icon">🏆</div>
+    <h2 class="win-title">Election Champion!</h2>
+    <p class="win-sub">You mastered Boyer-Moore across all 6 elections.</p>
+    <div class="win-score-box">
+      <div class="win-score-label">Total Score</div>
+      <div id="win-score" class="win-score-val">0</div>
+    </div>
+    <button id="win-restart-btn" class="btn-primary">Play Again ▶</button>
+  </div>
+</div>
+
+<script src="algorithm.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
