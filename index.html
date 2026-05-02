@@ -28,10 +28,10 @@
     <div class="menu-card">
       <h2>How to Play</h2>
       <ol>
-        <li>Watch voters stream in one by one 🗳️</li>
-        <li>The algorithm tracks a <strong>candidate</strong> and a <strong>count</strong> in real time</li>
-        <li>Predict which party will be the <strong>majority</strong> (&gt;50%)</li>
-        <li>Lock in early for a <strong>speed bonus</strong>!</li>
+        <li><strong>Predict first</strong> — pick a party <em>before</em> any votes are shown</li>
+        <li>Confirm your pick, then watch <strong>voters stream in</strong> one by one</li>
+        <li>The algorithm tracks a live <strong>candidate + count</strong> (Boyer-Moore)</li>
+        <li>If your prediction matches the majority (&gt;50%), you score points!</li>
         <li>3 wrong guesses and the election is over</li>
       </ol>
     </div>
@@ -64,63 +64,95 @@
     </div>
   </div>
 
-  <div class="playing-layout">
-
-    <!-- Left: Vote Stream + Tally -->
-    <div class="col-left">
-      <div class="panel">
-        <div class="panel-title">Voter Stream</div>
-        <div id="vote-stream" class="vote-stream"></div>
+  <!-- ── PHASE 1: PREDICT (shown first, votes hidden) ── -->
+  <div id="predict-phase" class="predict-phase">
+    <div class="predict-inner">
+      <div class="predict-header">
+        <div class="predict-step-tag">Step 1 of 2</div>
+        <h2 class="predict-title">Make Your Prediction</h2>
+        <p class="predict-desc">Commit to a party <em>before</em> seeing any votes. No peeking — pure intuition!</p>
+        <div id="predict-vote-count" class="predict-vote-count"></div>
       </div>
 
-      <div class="panel">
-        <div class="panel-title">Live Tally</div>
-        <div id="tally-bars" class="tally-bars"></div>
-      </div>
+      <div id="party-buttons" class="party-buttons-predict"></div>
+
+      <button id="confirm-btn" class="btn-confirm" disabled>
+        Confirm &amp; Start Voting ▶
+      </button>
     </div>
-
-    <!-- Center: Algorithm Panel -->
-    <div class="col-center">
-      <div id="algo-panel" class="panel algo-panel">
-        <div class="panel-title">Boyer-Moore Algorithm</div>
-        <div class="algo-row">
-          <div class="algo-item">
-            <div class="algo-item-label">Current Candidate</div>
-            <div id="algo-candidate" class="algo-candidate-val">—</div>
-          </div>
-          <div class="algo-divider"></div>
-          <div class="algo-item">
-            <div class="algo-item-label">Vote Count</div>
-            <div id="algo-count" class="algo-count-val">0</div>
-          </div>
-        </div>
-        <div id="algo-action" class="algo-action">Waiting for first vote...</div>
-
-        <div class="algo-legend">
-          <span class="legend-item new">🆕 New candidate</span>
-          <span class="legend-item reinforce">💪 Reinforce</span>
-          <span class="legend-item cancel">⚡ Cancel</span>
-        </div>
-
-        <div class="algo-pseudocode">
-          <div class="pseudo-line"><span class="kw">if</span> count == 0 → adopt voter as candidate</div>
-          <div class="pseudo-line"><span class="kw">elif</span> voter == candidate → count++</div>
-          <div class="pseudo-line"><span class="kw">else</span> → count--</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right: Prediction -->
-    <div class="col-right">
-      <div class="panel" id="prediction-area">
-        <div class="panel-title">Your Prediction</div>
-        <p class="prediction-hint">Who will be the majority?</p>
-        <div id="party-buttons" class="party-buttons"></div>
-        <button id="lock-btn" class="btn-lock" disabled>Lock In Prediction</button>
-      </div>
-    </div>
-
   </div>
+
+  <!-- ── PHASE 2: REVEAL (votes stream in after prediction) ── -->
+  <div id="reveal-phase" class="reveal-phase" style="display:none;">
+
+    <!-- Your pick reminder bar -->
+    <div class="pick-reminder">
+      <span class="pick-reminder-label">Your prediction:</span>
+      <span id="your-pick-badge" class="your-pick-badge">—</span>
+      <span class="pick-reminder-label" style="margin-left:auto;">Watch the votes roll in →</span>
+    </div>
+
+    <div class="playing-layout">
+
+      <!-- Left: Vote Stream + Tally -->
+      <div class="col-left">
+        <div class="panel">
+          <div class="panel-title">Voter Stream</div>
+          <div id="vote-stream" class="vote-stream"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Live Tally</div>
+          <div id="tally-bars" class="tally-bars"></div>
+        </div>
+      </div>
+
+      <!-- Center: Algorithm Panel -->
+      <div class="col-center">
+        <div id="algo-panel" class="panel algo-panel">
+          <div class="panel-title">Boyer-Moore Algorithm</div>
+          <div class="algo-row">
+            <div class="algo-item">
+              <div class="algo-item-label">Current Candidate</div>
+              <div id="algo-candidate" class="algo-candidate-val">—</div>
+            </div>
+            <div class="algo-divider"></div>
+            <div class="algo-item">
+              <div class="algo-item-label">Vote Count</div>
+              <div id="algo-count" class="algo-count-val">0</div>
+            </div>
+          </div>
+          <div id="algo-action" class="algo-action">Voting begins...</div>
+
+          <div class="algo-legend">
+            <span class="legend-item">🆕 New candidate</span>
+            <span class="legend-item">💪 Reinforce</span>
+            <span class="legend-item">⚡ Cancel</span>
+          </div>
+
+          <div class="algo-pseudocode">
+            <div class="pseudo-line"><span class="kw">if</span> count == 0 → adopt voter as candidate</div>
+            <div class="pseudo-line"><span class="kw">elif</span> voter == candidate → count++</div>
+            <div class="pseudo-line"><span class="kw">else</span> → count--</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: algo complexity note -->
+      <div class="col-right">
+        <div class="panel">
+          <div class="panel-title">Algorithm Info</div>
+          <div class="algo-info-block">
+            <div class="algo-info-row"><span class="algo-info-label">Time</span><span class="algo-info-val">O(n)</span></div>
+            <div class="algo-info-row"><span class="algo-info-label">Space</span><span class="algo-info-val">O(1)</span></div>
+            <div class="algo-info-row"><span class="algo-info-label">Passes</span><span class="algo-info-val">1 (+ verify)</span></div>
+          </div>
+          <p class="algo-info-desc">Boyer-Moore cancels opposing votes. The majority element can never be fully cancelled out — it always survives.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <!-- ══════════════════════════════════

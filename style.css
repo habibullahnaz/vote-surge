@@ -442,36 +442,7 @@ html, body {
 .party-emoji { font-size: 18px; }
 .party-name { font-size: 14px; }
 
-.btn-lock {
-  background: transparent;
-  border: 1.5px solid var(--accent);
-  color: var(--accent);
-  border-radius: 8px;
-  padding: 0.65rem 1rem;
-  font-family: var(--font-title);
-  font-size: 16px;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, transform 0.1s;
-  width: 100%;
-}
 
-.btn-lock:hover:not(:disabled) {
-  background: var(--accent);
-  color: var(--bg);
-}
-
-.btn-lock:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.btn-lock:active:not(:disabled) { transform: scale(0.97); }
-
-#prediction-area.locked {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
-}
 
 /* ── Result Screen ───────────────────────────────────── */
 #screen-result {
@@ -594,6 +565,167 @@ html, body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-m); border-radius: 99px; }
 
+/* ── Predict Phase ───────────────────────────────────── */
+.predict-phase {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+}
+
+.predict-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 480px;
+  width: 100%;
+}
+
+.predict-header { text-align: center; display: flex; flex-direction: column; gap: 0.5rem; }
+
+.predict-step-tag {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.predict-title {
+  font-family: var(--font-title);
+  font-size: 40px;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
+.predict-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.predict-desc em { color: var(--accent); font-style: normal; font-weight: 500; }
+
+.predict-vote-count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.party-buttons-predict {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.party-buttons-predict .party-btn {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0.75rem;
+  gap: 6px;
+}
+
+.party-buttons-predict .party-emoji { font-size: 28px; }
+.party-buttons-predict .party-name  { font-size: 13px; }
+
+.btn-confirm {
+  background: var(--accent);
+  color: #0d0f14;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.8rem 2rem;
+  font-family: var(--font-title);
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.12s, box-shadow 0.12s, opacity 0.15s;
+  box-shadow: 0 4px 20px rgba(245,200,66,0.25);
+}
+
+.btn-confirm:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(245,200,66,0.35);
+}
+
+.btn-confirm:active:not(:disabled) { transform: scale(0.97); }
+
+.btn-confirm:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ── Pick Reminder Bar ───────────────────────────────── */
+.pick-reminder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.5rem 1.2rem;
+  background: var(--bg3);
+  border-bottom: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
+
+.pick-reminder-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.your-pick-badge {
+  font-size: 14px;
+  font-weight: 500;
+  border: 1.5px solid currentColor;
+  border-radius: 99px;
+  padding: 2px 12px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Reveal Phase wraps the playing layout ───────────── */
+.reveal-phase {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Algorithm Info (right col in reveal) ────────────── */
+.algo-info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.algo-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.algo-info-label { font-size: 12px; color: var(--text-muted); }
+
+.algo-info-val {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.algo-info-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
 /* ── Responsive ──────────────────────────────────────── */
 @media (max-width: 768px) {
   .playing-layout {
@@ -604,4 +736,5 @@ html, body {
   }
   .col-left, .col-center, .col-right { overflow: visible; }
   .vote-stream { max-height: 120px; }
+  .party-buttons-predict { grid-template-columns: 1fr 1fr; }
 }
